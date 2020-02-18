@@ -5,11 +5,43 @@ Universal Conversion Image (UCI).
 
 __Note__: The deployment currently supports only oVirt/RHV.
 
+## Installation
+
+The installation simply consists in cloning this repository:
+
+```
+# git clone https://github.com/fdupont-redhat/uci-ansible.git
+```
+
+
+__Note__: To run the playbook, you will need to manually  install the
+`manageiq.v2v-conversion-host` role, as it requires a specific version. Here
+are the steps:
+
+```
+# cd /opt
+# git clone https://github.com/fdupont-redhat/manageiq-v2v-conversion-host.git
+# cd manageiq-v2v-conversion-host
+# git checkout ansible_refactor_role_for_uci_2
+# cd /usr/share/ansible/roles
+# ln -s /opt/manageiq-v2v-conversion-host/ansible/manageiq.v2v-conversion-host
+```
+
+
 ## Playbooks
 
 There's currently only one playbook: (deploy.yml). It creates the conversion
-host VM and then configures it. Once the conversion host VM is configured, it
-can run a conversion.
+host VM and then configures it. You only have to create the variable file(s).
+
+__Note__: For security reasons, we advise to store sensitive data in a vault.
+
+```
+# vim ~/vars.yml
+# ansible-vault create ~/vault.yml
+# ansible-playbook -i localhost, -e @~/vars.yml -e @~/vault.yml --ask-vault-pass deploy.yml
+```
+
+Once the conversion host VM is configured, it can run a conversion.
 
 ## Role Variables
 
