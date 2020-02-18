@@ -1,0 +1,79 @@
+---
+- block:
+  - name: Acquire authentication token
+    ovirt_auth:
+      url: "https://{{ ovirt_hostname }}/ovirt-engine/api"
+      username: "{{ ovirt_username }}"
+      password: "{{ ovirt_password }}"
+      ca_file: "{{ ovirt_ca_file | default(omit) }}"
+      insecure: "{{ ovirt_ca_file is undefined }}"
+    tags:
+      - always
+
+  - name: Upload disk image to RHV
+    ovirt_disk:
+      auth: "{{ ovirt_auth }}"
+      name: "{{ uci_vm_name }}_Disk1"
+      size: "{{ uci_disk_image_size }}"
+      format: "cow"
+      upload_image_path: "/root/uci-image.qcow2"
+      storage_domain: "{{ ovirt_storage_domain }}"
+
+  - name: Create VM from disk image
+    ovirt_vm:
+      auth: "{{ ovirt_auth }}"
+      name: "{{ uci_vm_name }}"
+      cluster: "{{ ovirt_cluster }}"
+      cpu_cores: "{{ uci_vm_cpu_cores }}"
+      cpu_sockets: "{{ uci_vm_cpu_sockets }}"
+      cpu_mode: "host_passthrough"
+      memory: "{{ uci_vm_memory }}"
+      type: "server"
+      operating_system: "rhel_7x64"
+      placement_policy: "pinned"
+      disks:
+        - name: "{{ uci_vm_name }}_Disk1"
+          bootable: True
+          interface: "virtio"
+      nics:
+        - name: "nic1"
+          profile_name: "{{ ovirt_vnic_profile }}"
+      cloud_init:
+        authorized_ssh_keys: "{{ uci_ssh_public_key }}"
+      state: "running"
+    register: uci_vm
+
+  - name: Wait for guest agent to report devices
+    ovirt_vm_info:
+      auth: "{{ ovirt_auth }}"
+      pattern: "name={{ uci_vm_name }}"
+      fetch_nested: yes
+      nested_attributes:
+        - ips
+    register: uci_vm_info
+    until: "uci_vm_info.ovirt_vms | map(attribute='reported_devices') | list | first | length > 0"
+    retries: 60
+    delay: 15
+
+  - name: Extract IP addresses from VM info
+    set_fact:
+      uci_ip_addresses: "{{ uci_vm_info.ovirt_vms[0].reported_devices | map(attribute='ips') | select('defined') | list | flatten | map(attribute='address') | list }}"
+
+  - include_tasks: check_ipaddress.yml
+    with_items:
+      - "{{ uci_ip_addresses }}"
+
+  - fail:
+      msg: "Couldn't retrieve a valid IP address for {{ uci_vm_name }}"
+    when:
+      - "uci_ip_address is not defined"
+
+  always:
+    - name: Logout from oVirt engine
+      ovirt_auth:
+        state: absent
+        ovirt_auth: "{{ ovirt_auth }}"
+      when:
+        - "ovirt_auth is defined"
+      tags:
+        - always

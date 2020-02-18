@@ -1,0 +1,15 @@
+---
+- include_tasks: "{{ provider_type }}/deploy_create_vm.yml"
+
+- name: Add VM to inventory
+  add_host:
+    hostname: "{{ uci_ip_address }}"
+    groups:
+      - conversion_hosts
+
+- name: Add VM SSH key to ~/.ssh/known_hosts file
+  lineinfile:
+    dest: ~/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa ' + uci_ip_address) }}"

@@ -1,0 +1,16 @@
+---
+- block:
+  - name: "Check if {{ item }} belongs to {{ uci_subnet }}"
+    set_fact:
+      uci_ip_address_in_network: "{{ item | ipaddr | ipsubnet(uci_subnet) }}"
+    ignore_errors: yes
+    register: ip_check
+
+  - name: "Setting {{ item }} as conversion host interface"
+    set_fact:
+      uci_ip_address: "{{ item }}"
+    when:
+      - "not ip_check.failed"
+
+  when:
+    - "uci_ip_address is undefined"

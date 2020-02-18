@@ -1,0 +1,14 @@
+- name: Deploy the conversion host VM and add it to inventory
+  hosts: localhost
+  connection: local
+  roles:
+    - role: ims.uci
+      role_action: deploy
+
+- name: Configure conversion host VM
+  hosts: conversion_hosts
+  remote_user: cloud-user
+  become: yes
+  roles:
+    - role: manageiq.v2v-conversion-host
+      role_action: install

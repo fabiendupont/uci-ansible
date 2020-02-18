@@ -1,0 +1,6 @@
+---
+ovirt_username: admin@internal
+ovirt_vnic_profile: ovirtmgmt
+uci_vm_cpu_cores: 2
+uci_vm_cpu_sockets: 2
+uci_vm_memory: 8GiB
