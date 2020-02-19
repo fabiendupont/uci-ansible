@@ -20,11 +20,9 @@ are the steps:
 
 ```
 # cd /opt
-# git clone https://github.com/fdupont-redhat/manageiq-v2v-conversion-host.git
-# cd manageiq-v2v-conversion-host
-# git checkout ansible_refactor_role_for_uci_2
+# git clone https://github.com/ManageIQ/manageiq-v2v-conversion_host.git
 # cd /usr/share/ansible/roles
-# ln -s /opt/manageiq-v2v-conversion-host/ansible/manageiq.v2v-conversion-host
+# ln -s /opt/manageiq-v2v-conversion_host/ansible/manageiq.v2v-conversion-host
 ```
 
 
