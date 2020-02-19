@@ -82,17 +82,19 @@ we support only oVirt. The variables are all prefix by the provider type.
 
 #### Variables for OpenStack
 
-| Variable                  | Default value  | Description                                                       |
-| ------------------------- | -------------- | ----------------------------------------------------------------- |
-| openstack_hostname        |                | Hostname or IP address of OpenStack public API endpoint           |
-| openstack_username        |                | USername to connect to OpenStack public API                       |
-| openstack_password        |                | Password to connect to OpenStack public API                       |
-| openstack_project_name    |                | Name of the project in which the conversion host will be deployed |
-| openstack_image_name      |                | Name of the image under which the UCI disk image will be uploaded |
-| openstack_flavor          |                | Flavor to use to create the conversion host                       |
-| openstack_keypair         |                | SSH key pair to use to create the conversion host                 |
-| openstack_network         |                | Network to which attach the conversion host NIC                   |
-| openstack_security_groups |                | Security groups to apply to the conversion host                   |
+| Variable                      | Default value  | Description                                                       |
+| ----------------------------- | -------------- | ----------------------------------------------------------------- |
+| openstack_hostname            |                | Hostname or IP address of OpenStack public API endpoint           |
+| openstack_username            |                | USername to connect to OpenStack public API                       |
+| openstack_password            |                | Password to connect to OpenStack public API                       |
+| openstack_user_domain_name    |                | Name of the keystone domain for users                             |
+| openstack_project_domain_name |                | Name of the keystone domain for projects                          |
+| openstack_project_name        |                | Name of the project in which the conversion host will be deployed |
+| openstack_image_name          |                | Name of the image under which the UCI disk image will be uploaded |
+| openstack_flavor              |                | Flavor to use to create the conversion host                       |
+| openstack_keypair             |                | SSH key pair to use to create the conversion host                 |
+| openstack_network             |                | Network to which attach the conversion host NIC                   |
+| openstack_security_groups     |                | Security groups to apply to the conversion host                   |
 
 We consider that the OpenStack environment is ready to upload the image and
 create the conversion host. This can be automated by an Ansible role or
@@ -159,6 +161,8 @@ provider_type: ovirt
 openstack_hostname: openstack.example.com
 openstack_username: admin
 openstack_password: secret
+openstack_user_domain_name: Default
+openstack_project_domain_name: Default
 openstack_project_name: migration
 
 # The conversion host placement information
