@@ -1,0 +1,9 @@
+---
+- name: Download UCI disk image
+  get_url:
+    url: "{{ uci_disk_image_url }}"
+    dest: "/root/uci-image.qcow2"
+    validate_certs: no
+    owner: "root"
+    group: "root"
+    mode: "0600"

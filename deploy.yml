@@ -9,6 +9,8 @@
   hosts: conversion_hosts
   remote_user: cloud-user
   become: yes
+  vars:
+    - ansible_python_interpreter: /usr/libexec/platform-python
   roles:
     - role: manageiq.v2v-conversion-host
       role_action: install

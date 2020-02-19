@@ -64,7 +64,7 @@ we support only oVirt. The variables are all prefix by the provider type.
 
 | Variable | Default value | Description |
 | ---------------- | --------------------- | ---------------------------------- |
-| provider_type    |           | Type of the provider. Valid values: `ovirt`. |
+| provider_type    |           | Type of the provider. Valid values: `ovirt`, `openstack`. |
 
 
 #### Variables for oVirt
@@ -80,6 +80,25 @@ we support only oVirt. The variables are all prefix by the provider type.
 | ovirt_vnic_profile   | ovirtmgmt      | oVirt vNIC profile to which attach the conversion host NIC               |
 
 
+#### Variables for OpenStack
+
+| Variable                  | Default value  | Description                                                       |
+| ------------------------- | -------------- | ----------------------------------------------------------------- |
+| openstack_hostname        |                | Hostname or IP address of OpenStack public API endpoint           |
+| openstack_username        |                | USername to connect to OpenStack public API                       |
+| openstack_password        |                | Password to connect to OpenStack public API                       |
+| openstack_project_name    |                | Name of the project in which the conversion host will be deployed |
+| openstack_image_name      |                | Name of the image under which the UCI disk image will be uploaded |
+| openstack_flavor          |                | Flavor to use to create the conversion host                       |
+| openstack_keypair         |                | SSH key pair to use to create the conversion host                 |
+| openstack_network         |                | Network to which attach the conversion host NIC                   |
+| openstack_security_groups |                | Security groups to apply to the conversion host                   |
+
+We consider that the OpenStack environment is ready to upload the image and
+create the conversion host. This can be automated by an Ansible role or
+playbook, but this is beyond our scope.
+
+
 ### Variables for manageiq.v2v-conversion-host role
 
 | Variable                       | Default value | Description                                                                                                                   |
@@ -91,7 +110,9 @@ we support only oVirt. The variables are all prefix by the provider type.
 | v2v_ca_bundle                  |               | A bundle of CA certificates to allow connection to the provider where the conversion host belongs. See below for value.       |
 
 
-### Example variable file
+### Examples variable files
+
+#### Example variable file for oVirt
 
 ```yaml
 ---
@@ -127,3 +148,41 @@ v2v_ca_bundle: |
   -----END CERTIFICATE-----
 ```
 
+#### Example variable file for oVirt
+
+```yaml
+---
+# The type of provider where we deploy the conversion host
+provider_type: ovirt
+
+# The provider connection details
+openstack_hostname: openstack.example.com
+openstack_username: admin
+openstack_password: secret
+openstack_project_name: migration
+
+# The conversion host placement information
+openstack_image_name: ims-uci
+openstack_flavor: ims.conversion-host
+openstack_keypair: migration
+openstack_network: external_network
+openstack_security_groups:
+  - ims.conversion-host
+
+# The conversion host VM details
+uci_disk_image_url: http://content.example.com/uci/v2v-conversion-host-appliance-latest.qcow2
+uci_disk_image_size: 10GiB
+uci_vm_name: my_uci
+uci_subnet: "192.168.0.0/24"
+uci_ssh_public_key: "ssh-rsa AAAAB...YZZZZ UCI Public Key"
+
+# The conversion configuration (see. https://github.com/ManageIQ/manageiq-v2v-conversion_host/blob/master/docs/Ansible.md)
+v2v_transport_method: vddk
+v2v_vddk_package_url: http://content.example.com/vddk/VMware-vix-disklib-stable.tar.gz
+v2v_ca_bundle: |
+  -----BEGIN CERTIFICATE-----
+  MIID4TCCAsmgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwUjELMAkGA1UEBhMCVVMx
+  [...]
+  SGCRHHJld1kAiQUJnHTeArOIhflg4IW+bxG/skxt6r/oatuv6g==
+  -----END CERTIFICATE-----
+```

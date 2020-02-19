@@ -1,0 +1,44 @@
+---
+- name: Build authentication hash
+  set_fact:
+    openstack_auth:
+      auth_url: "https://{{ openstack_hostname }}:13000/v3"
+      username: "{{ openstack_username }}"
+      password: "{{ openstack_password }}"
+      project_name: "{{ openstack_project_name }}"
+      os_user_domain_name: "{{ openstack_user_domain_name }}"
+      os_project_domain_name: "{{ openstack_project_domain_name }}"
+  tags:
+    - always
+
+- name: Upload disk image as Glance image
+  os_image:
+    auth: "{{ openstack_auth }}"
+    name: "{{ openstack_image_name }}"
+    disk_format: "qcow2"
+    filename: "/root/uci-image.qcow2"
+    state: present
+
+- name: Create VM from image
+  os_server:
+    auth: "{{ openstack_auth }}"
+    name: "{{ uci_vm_name }}"
+    image: "{{ openstack_image_name }}"
+    flavor: "{{ openstack_flavor }}"
+    key_name: "{{ openstack_keypair }}"
+    network: "{{ openstack_network }}"
+    security_groups: "{{ openstack_security_groups }}"
+    config_drive: yes
+    state: "present"
+    timeout: 900
+  register: uci_vm
+
+- name: Wait for guest agent to report devices
+  os_server_info:
+    auth: "{{ openstack_auth }}"
+    server: "{{ uci_vm_name }}"
+  register: uci_vm_info
+
+- name: Extract IP addresses from VM info
+  set_fact:
+    uci_ip_addresses: "{{ uci_vm_info.openstack_servers[0].addresses | dict2items | map(attribute='value') | list | flatten | map(attribute='addr') | list }}"

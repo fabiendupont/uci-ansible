@@ -59,15 +59,6 @@
     set_fact:
       uci_ip_addresses: "{{ uci_vm_info.ovirt_vms[0].reported_devices | map(attribute='ips') | select('defined') | list | flatten | map(attribute='address') | list }}"
 
-  - include_tasks: check_ipaddress.yml
-    with_items:
-      - "{{ uci_ip_addresses }}"
-
-  - fail:
-      msg: "Couldn't retrieve a valid IP address for {{ uci_vm_name }}"
-    when:
-      - "uci_ip_address is not defined"
-
   always:
     - name: Logout from oVirt engine
       ovirt_auth:

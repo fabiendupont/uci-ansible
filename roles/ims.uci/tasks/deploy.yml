@@ -1,5 +1,16 @@
 ---
+- include_tasks: common/download_image.yml
+
 - include_tasks: "{{ provider_type }}/deploy_create_vm.yml"
+
+- include_tasks: common/check_ip_address.yml
+  with_items:
+    - "{{ uci_ip_addresses }}"
+
+- fail:
+    msg: "Couldn't retrieve a valid IP address for {{ uci_vm_name }}"
+  when:
+    - "uci_ip_address is not defined"
 
 - name: Add VM to inventory
   add_host:
