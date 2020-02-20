@@ -1,8 +1,8 @@
 ---
 - block:
-  - name: "Check if {{ item }} belongs to {{ uci_subnet }}"
+  - name: "Check if {{ item }} belongs to {{ uci_subnet_cidr }}"
     set_fact:
-      uci_ip_address_in_network: "{{ item | ipaddr | ipsubnet(uci_subnet) }}"
+      uci_ip_address_in_network: "{{ item | ipaddr | ipsubnet(uci_subnet_cidr) }}"
     ignore_errors: yes
     register: ip_check
 

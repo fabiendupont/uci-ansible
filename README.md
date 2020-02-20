@@ -45,16 +45,16 @@ Once the conversion host VM is configured, it can run a conversion.
 
 ### Variables for the conversion host VM
 
-| Variable            | Default value | Description                                                   |
-| ------------------- | ------------- | ------------------------------------------------------------- |
-| uci_disk_image_url  |               | URL of conversion host appliance QCOW2 image                  |
-| uci_disk_image_size |               | Conversion host appliance image size                          |
-| uci_vm_name         |               | Name of the conversion host VM                                |
-| uci_cpu_sockets     | 2             | Number of CPU sockets for conversion host VM                  |
-| uci_cpu_cores       | 2             | Number of CPU cores per socket for conversion host VM         |
-| uci_memory          | 8GiB          | Memory allocation for conversion host VM                      |
-| uci_subnet          |               | Subnet CIDR notation to which conversion host VM is connected |
-| uci_ssh_public_key  |               | SSH public key that is added to cloud-user's authorized keys  |
+| Variable            | Default value | Description                                                                    |
+| ------------------- | ------------- | ------------------------------------------------------------------------------ |
+| uci_disk_image_url  |               | URL of conversion host appliance QCOW2 image                                   |
+| uci_disk_image_size |               | Conversion host appliance image size                                           |
+| uci_vm_name         |               | Name of the conversion host VM                                                 |
+| uci_cpu_sockets     | 2             | Number of CPU sockets for conversion host VM                                   |
+| uci_cpu_cores       | 2             | Number of CPU cores per socket for conversion host VM                          |
+| uci_memory          | 8GiB          | Memory allocation for conversion host VM                                       |
+| uci_subnet_cidr     |               | Subnet CIDR notation of the network to which conversion host VM is connected   |
+| uci_ssh_public_key  |               | SSH public key that is added to cloud-user's authorized keys during deployment |
 
 
 ### Variables for the provider
@@ -69,15 +69,15 @@ we support only oVirt. The variables are all prefix by the provider type.
 
 #### Variables for oVirt
 
-| Variable             | Default value  | Description                                                              |
-| -------------------- | -------------- | ------------------------------------------------------------------------ |
-| ovirt_hostname       |                | Hostname or IP address of oVirt Manager                                  |
-| ovirt_username       | admin@internal | Username to connect to oVirt Manager                                     |
-| ovirt_password       |                | Password to connect to oVirt Manager                                     |
-| ovirt_ca_file        |                | CA certificate(s) bundle file used to verify oVirt Manager's certificate |
-| ovirt_cluster        |                | oVirt cluster where to create the conversion host VM                     |
-| ovirt_storage_domain |                | oVirt storage domain where to upload the conversion host disk            |
-| ovirt_vnic_profile   | ovirtmgmt      | oVirt vNIC profile to which attach the conversion host NIC               |
+| Variable             | Default value  | Description                                                                    |
+| -------------------- | -------------- | ------------------------------------------------------------------------------ |
+| ovirt_hostname       |                | Hostname or IP address of oVirt Manager                                        |
+| ovirt_username       | admin@internal | Username to connect to oVirt Manager                                           |
+| ovirt_password       |                | Password to connect to oVirt Manager                                           |
+| ovirt_ca_file        |                | Path of CA certificates bundle file used to verify oVirt Manager's certificate. On oVirt Manager, it is `/etc/pki/ovirt-engine/apache-ca.pem` |
+| ovirt_cluster        |                | oVirt cluster where to create the conversion host VM                           |
+| ovirt_storage_domain |                | oVirt storage domain where to upload the conversion host disk                  |
+| ovirt_vnic_profile   | ovirtmgmt      | oVirt vNIC profile to which attach the conversion host NIC                     |
 
 
 #### Variables for OpenStack
@@ -136,7 +136,7 @@ ovirt_vnic_profile: uci_network
 uci_disk_image_url: http://content.example.com/uci/v2v-conversion-host-appliance-latest.qcow2
 uci_disk_image_size: 10GiB
 uci_vm_name: my_uci
-uci_subnet: "192.168.0.0/24"
+uci_subnet_cidr: "192.168.0.0/24"
 uci_ssh_public_key: "ssh-rsa AAAAB...YZZZZ UCI Public Key"
 
 # The conversion configuration (see. https://github.com/ManageIQ/manageiq-v2v-conversion_host/blob/master/docs/Ansible.md)
@@ -177,7 +177,7 @@ openstack_security_groups:
 uci_disk_image_url: http://content.example.com/uci/v2v-conversion-host-appliance-latest.qcow2
 uci_disk_image_size: 10GiB
 uci_vm_name: my_uci
-uci_subnet: "192.168.0.0/24"
+uci_subnet_cidr: "192.168.0.0/24"
 uci_ssh_public_key: "ssh-rsa AAAAB...YZZZZ UCI Public Key"
 
 # The conversion configuration (see. https://github.com/ManageIQ/manageiq-v2v-conversion_host/blob/master/docs/Ansible.md)
