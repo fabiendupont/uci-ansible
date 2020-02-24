@@ -14,6 +14,7 @@
 - name: Upload disk image as Glance image
   os_image:
     auth: "{{ openstack_auth }}"
+    validate_certs: no
     name: "{{ openstack_image_name }}"
     disk_format: "qcow2"
     filename: "/root/uci-image.qcow2"
@@ -22,6 +23,7 @@
 - name: Create VM from image
   os_server:
     auth: "{{ openstack_auth }}"
+    validate_certs: no
     name: "{{ uci_vm_name }}"
     image: "{{ openstack_image_name }}"
     flavor: "{{ openstack_flavor }}"
@@ -36,6 +38,7 @@
 - name: Wait for guest agent to report devices
   os_server_info:
     auth: "{{ openstack_auth }}"
+    validate_certs: no
     server: "{{ uci_vm_name }}"
   register: uci_vm_info
 
