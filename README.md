@@ -155,7 +155,7 @@ v2v_ca_bundle: |
 ```yaml
 ---
 # The type of provider where we deploy the conversion host
-provider_type: ovirt
+provider_type: openstack
 
 # The provider connection details
 openstack_hostname: openstack.example.com
